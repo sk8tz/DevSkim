@@ -107,11 +107,6 @@ export class PathOperations
 
             case ".dockerfile": return "text/plain";
 
-            case ".fs":
-            case ".fsi":
-            case ".fsx":
-            case ".fsscript": return "text/plain";
-
             case ".go": return "text/plain";
 
             case ".groovy": 
