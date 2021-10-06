@@ -134,11 +134,7 @@ export default class DevSkimServer
     private onDidChangeContent(change): Promise<void>
     {
         this.connection.console.log(`DevSkimServer: onDidChangeContent(${change.document.uri})`);
-        if(change && change.document)
-        {
-            return this.validateTextDocument(change.document);
-        }
-        return new Promise((resolve,reject)=> reject('Document for change was undefined.'));;
+        return this.validateTextDocument(change.document);
     }
 
     /**
