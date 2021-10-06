@@ -8,9 +8,10 @@
 		"noUnusedParameters": false,
 		"noImplicitAny": false,
 		"noImplicitReturns": true,
+		"composite": true
 	},
 	"references": [
-		{ "path": "./client/tsconfig.json" },
-		{ "path": "./server/tsconfig.json" }
+		{ "path": "./client/dev.tsconfig.json" },
+		{ "path": "./server/dev.tsconfig.json" }
 	]
 }

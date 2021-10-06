@@ -83,7 +83,7 @@ export class RuleValidator implements IRuleValidator
         {
             if (this.outputMessages.length > 0)
             {
-                this.logFilePath = path.join(this.errorDir, "rulesValidationLog.json1");
+                this.logFilePath = path.join(this.errorDir, "rulesValidationLog.json");
                 await this.fs.writeFile(this.logFilePath, JSON.stringify(this.outputMessages, null, 4),
                     (err: ErrnoException) =>
                     {

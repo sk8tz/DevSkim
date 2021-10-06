@@ -36,8 +36,9 @@ export class ReloadRulesRequest {
 
 export function activate(context: vscode.ExtensionContext) {
 
+	var serverPath = path.join("server", "dist", "index.js");
 	try {
-		const serverModule = context.asAbsolutePath(path.join("server", "out", 'index.js'));
+		const serverModule = context.asAbsolutePath(serverPath);
 		console.log(`Server module: ${serverModule}`);
 		const devSkimProperties = getDevSkimConfiguration();
 		const env: any = {
@@ -56,12 +57,12 @@ export function activate(context: vscode.ExtensionContext) {
 			run: {
 				module: serverModule,
 				options: { env },
-				transport: TransportKind.pipe,
+				transport: TransportKind.ipc,
 			},
 			debug: {
 				module: serverModule,
 				options: debugOptions,
-				transport: TransportKind.pipe,
+				transport: TransportKind.ipc,
 			},
 		};
 
@@ -98,6 +99,7 @@ export function activate(context: vscode.ExtensionContext) {
 		//an analysis still happens
 
 		// @todo  This has a code smell and should be looked at - Dave
+		console.log("Starting timeout.");
 		setTimeout(function () {
 			const textDocuments: TextDocumentIdentifier[] = [];
 			for (let x = 0; x < vscode.workspace.textDocuments.length; x++) {
@@ -105,8 +107,8 @@ export function activate(context: vscode.ExtensionContext) {
 				textDocuments[x].uri = vscode.workspace.textDocuments[x].uri.toString();
 			}
 			client.sendRequest(ValidateDocsRequest.type, {textDocuments});
+			console.log("Sent timeout request.");
 		}, 30000);
-
 	} catch (err) {
 		handleError(err);
 	}

@@ -26,6 +26,7 @@ import { IRuleValidator } from "../src/utility_classes/ruleValidator";
 import { DevSkimWorkerSettings } from "../src/devskimWorkerSettings";
 import { DevSkimWorker } from "../src/devskimWorker";
 import * as Path from "path";
+import { DebugLogger } from '../src/utility_classes/logger';
 
 /**
  * The bulk of the DevSkim analysis logic.  Loads rules in, exposes functions to run rules across a file
@@ -38,7 +39,7 @@ export class DevSkimRules
 
     constructor(private connection: Connection, private settings: IDevSkimSettings, private ruleValidator: IRuleValidator)
     {
-        this.rulesDirectory = DevSkimWorkerSettings.getRulesDirectory(connection);
+        this.rulesDirectory = DevSkimWorkerSettings.getRulesDirectory(new DebugLogger(settings, connection));
         this.loadRules();
     }
 

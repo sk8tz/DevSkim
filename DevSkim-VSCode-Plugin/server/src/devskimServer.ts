@@ -138,7 +138,7 @@ export default class DevSkimServer
         {
             return this.validateTextDocument(change.document);
         }
-        return;
+        return new Promise((resolve,reject)=> reject('Document for change was undefined.'));;
     }
 
     /**
@@ -195,13 +195,13 @@ export default class DevSkimServer
 
         if (!edits)
         {
-            return;
+            return [];
         }
 
         let fixes = new Fixes(edits);
         if (fixes.isEmpty())
         {
-            return;
+            return [];
         }
 
         let documentVersion = -1;
@@ -292,7 +292,8 @@ export default class DevSkimServer
      */
     private async validateTextDocument(textDocument: TextDocument): Promise<void>
     {
-        if (textDocument && textDocument.uri)
+        console.log("hello");
+        if (textDocument && textDocument.hasOwnProperty('uri'))
         {
             this.connection.console.log(`DevSkimServer: validateTextDocument(${textDocument.uri})`);
             let diagnostics: Diagnostic[] = [];
