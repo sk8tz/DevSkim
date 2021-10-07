@@ -122,7 +122,7 @@ export default class DevSkimServer
     {
         if (this.globalSettings.removeFindingsOnClose)
         {
-            let diagnostics: Diagnostic[] = [];
+            const diagnostics: Diagnostic[] = [];
             this.connection.sendDiagnostics({ uri: change.document.uri, diagnostics });
         }
     }
@@ -143,7 +143,7 @@ export default class DevSkimServer
      */
     private onInitialize(params: InitializeParams): void
     {
-        let capabilities = params.capabilities;
+        const capabilities = params.capabilities;
         this.hasConfigurationCapability = !!(capabilities.workspace && !!capabilities.workspace.configuration);
         this.hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
 
@@ -161,9 +161,9 @@ export default class DevSkimServer
      */
     private onRequestValidateDocsRequest(params: ValidateDocsParams): void
     {
-        for (let docs of params.textDocuments)
+        for (const docs of params.textDocuments)
         {
-            let textDocument = this.documents.get(docs.uri);
+            const textDocument = this.documents.get(docs.uri);
 
             this.connection.console.log(`DevSkimServer: onRequestValidateDocsRequest(${textDocument.uri})`);
             this.validateTextDocument(textDocument);
@@ -186,15 +186,15 @@ export default class DevSkimServer
     private onCodeAction(params: CodeActionParams): Command[]
     {
         this.codeActions = [];
-        let uri = params.textDocument.uri;
-        let edits = this.worker.codeActions[uri];
+        const uri = params.textDocument.uri;
+        const edits = this.worker.codeActions[uri];
 
         if (!edits)
         {
             return [];
         }
 
-        let fixes = new Fixes(edits);
+        const fixes = new Fixes(edits);
         if (fixes.isEmpty())
         {
             return [];
@@ -207,7 +207,7 @@ export default class DevSkimServer
             return TextEdit.replace(editInfo.edit.range, editInfo.edit.text || '');
         }
 
-        for (let editInfo of fixes.getScoped(params.context.diagnostics))
+        for (const editInfo of fixes.getScoped(params.context.diagnostics))
         {
             documentVersion = editInfo.documentVersion;
             this.codeActions.push(Command.create(editInfo.label, 'devskim.applySingleFix', uri, documentVersion,
@@ -289,10 +289,10 @@ export default class DevSkimServer
     private async validateTextDocument(textDocument: TextDocument): Promise<void>
     {
         console.log("hello");
-        if (textDocument && textDocument.hasOwnProperty('uri'))
+        if (textDocument && Object.prototype.hasOwnProperty.call(textDocument,"uri"))
         {
             this.connection.console.log(`DevSkimServer: validateTextDocument(${textDocument.uri})`);
-            let diagnostics: Diagnostic[] = [];
+            const diagnostics: Diagnostic[] = [];
             let settings = await this.getDocumentSettings(textDocument.uri);
             if (!settings)
             {
@@ -306,12 +306,12 @@ export default class DevSkimServer
                 const problems: DevSkimProblem[] =
                     await this.worker.analyzeText(textDocument.getText(), textDocument.languageId, textDocument.uri);
 
-                for (let problem of problems)
+                for (const problem of problems)
                 {
-                    let diagnostic: Diagnostic = problem.makeDiagnostic(this.worker.dswSettings);
+                    const diagnostic: Diagnostic = problem.makeDiagnostic(this.worker.dswSettings);
                     diagnostics.push(diagnostic);
 
-                    for (let fix of problem.fixes)
+                    for (const fix of problem.fixes)
                     {
                         this.worker.recordCodeAction(textDocument.uri, textDocument.version,
                             diagnostic.range, diagnostic.code, fix, problem.ruleId);
@@ -335,7 +335,7 @@ export default class DevSkimServer
 
 export class ReloadRulesRequest
 {
-    public static type = new RequestType<{}, void, void>('devskim/validaterules')
+    public static type = new RequestType<Record<string,never>, void, void>('devskim/validaterules')
 }
 
 interface ValidateDocsParams

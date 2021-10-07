@@ -9,7 +9,7 @@ import {IDevSkimSettings} from "../src/devskimObjects";
 
 jest.mock("../src/utility_classes/ruleValidator");
 // jest.mock("./devskimWorkerSettings");
-jest.mock('vscode-languageserver', )
+jest.mock('vscode-languageserver');
 
 const connection: any = { console: { log: (s) => (console.log(s)) } } as Connection;
 

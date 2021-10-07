@@ -31,12 +31,12 @@ export class ValidateDocsRequest {
 }
 
 export class ReloadRulesRequest {
-	public static type: RequestType<{},void,void> = new RequestType<{}, void, void>('devskim/validaterules')
+	public static type: RequestType<Record<string,never>,void,void> = new RequestType<Record<string,never>, void, void>('devskim/validaterules')
 }
 
 export function activate(context: vscode.ExtensionContext) {
 
-	var serverPath = path.join("server", "dist", "index.js");
+	const serverPath = path.join("server", "dist", "index.js");
 	try {
 		const serverModule = context.asAbsolutePath(serverPath);
 		console.log(`Server module: ${serverModule}`);
@@ -46,14 +46,14 @@ export function activate(context: vscode.ExtensionContext) {
             devSkimProperties,
 		};
 
-		let debugOptions = {
+		const debugOptions = {
 			execArgv: ["--nolazy", "--inspect=6004"],
 			env,
 		};
 
 		// If the extension is launched in debug mode then the debug server options are used
 		// Otherwise the run options are used
-		let serverOptions: ServerOptions = {
+		const serverOptions: ServerOptions = {
 			run: {
 				module: serverModule,
 				options: { env },
@@ -69,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Options to control the language client
 		// Register the server for plain text documents.  I haven't found a "Always do this" option, hence the exhaustive
 		//listing here.  If someone else knows how to say "do this for *" that would be the preference
-		let clientOptions: LanguageClientOptions = {
+		const clientOptions: LanguageClientOptions = {
 			documentSelector: getDocumentSelectors(),
 			synchronize: {
 				// Synchronize the setting section 'devskim' to the server
@@ -83,14 +83,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// Create the language client and start the client.
 		console.log(`extension: starting client ... `);
-		let disposable = client.start();
+		const disposable = client.start();
 
 		// Push the disposable to the context's subscriptions so that the 
 		// client can be deactivated on extension deactivation
 		context.subscriptions.push(disposable,
 			vscode.commands.registerCommand('devskim.applySingleFix', applyTextEdits),
 			vscode.commands.registerCommand('devskim.scanWorkspace', commandScanEverything),
-			vscode.commands.registerCommand('devskim.reloadRules', commandReloadRules)
+			vscode.commands.registerCommand('devskim.reloadRules', commandReloadRules),
 		);
 
 		//when the extension is first loading a lot of stuff is happening asynchronously in VS code
@@ -116,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function getDevSkimConfiguration(section='devskim' ): DevSkimSettings {
-	let settings: DevSkimSettings = new DevSkimSettingsObject();
+	const settings: DevSkimSettings = new DevSkimSettingsObject();
 	settings.enableBestPracticeRules = vscode.workspace.getConfiguration(section).get('enableBestPracticeRules', false);
 	settings.enableDefenseInDepthSeverityRules = vscode.workspace.getConfiguration(section).get('enableDefenseInDepthSeverityRules', false);
 	settings.enableInformationalSeverityRules = vscode.workspace.getConfiguration(section).get('enableInformationalSeverityRules', false);
@@ -149,7 +149,7 @@ function handleError(err: any) {
  * @param {TextEdit[]} edits - the actual changes to make (range, text to replace, etc.)
  */
 function applyTextEdits(uri: string, documentVersion: number, edits: TextEdit[]) {
-		let textEditor = vscode.window.activeTextEditor;
+		const textEditor = vscode.window.activeTextEditor;
 		//make sure the code action triggered is against the current document (abundance of caution - the user shouldn't
 		//be able to trigger an action for a different document).  Also make sure versions match.  This also shouldn't happen
 		//as any changes to the document should refresh the code action, but since things are asynchronous this might be possible
@@ -159,7 +159,7 @@ function applyTextEdits(uri: string, documentVersion: number, edits: TextEdit[])
 			}
 			//apply the edits
 			textEditor.edit(mutator => {
-				for (let edit of edits) {
+				for (const edit of edits) {
 					mutator.replace(client.protocol2CodeConverter.asRange(edit.range), edit.newText);
 				}
 			}).then((success) => {
@@ -176,13 +176,13 @@ function commandReloadRules() {
 
 function commandScanEverything() {
 	if (vscode.workspace.workspaceFolders) {
-		let dir = require('node-dir');
-		let [rootFolder] = vscode.workspace.workspaceFolders;
+		const dir = require('node-dir');
+		const [rootFolder] = vscode.workspace.workspaceFolders;
 		if (rootFolder && rootFolder.uri && rootFolder.uri.fsPath) {
 			dir.files(rootFolder.uri.fsPath, function (err: any, files: [any]) {
 				if (err) throw err;
 
-				for (let curFile of files) {
+				for (const curFile of files) {
 					if (curFile.indexOf(".git") == -1) {
 						vscode.workspace.openTextDocument(curFile).then(doc => {
 							const textDocuments: TextDocumentIdentifier[] = [];
