@@ -36,7 +36,7 @@ export class ReloadRulesRequest {
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const serverPath = path.join("server", "dist", "index.js");
+	const serverPath = path.join("server", "dist", "src", "index.js");
 	try {
 		const serverModule = context.asAbsolutePath(serverPath);
 		console.log(`Server module: ${serverModule}`);
