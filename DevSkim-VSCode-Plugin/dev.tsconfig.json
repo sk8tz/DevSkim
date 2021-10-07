@@ -7,8 +7,7 @@
       	"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"noImplicitAny": false,
-		"noImplicitReturns": true,
-		"composite": true
+		"noImplicitReturns": true
 	},
 	"references": [
 		{ "path": "./client/dev.tsconfig.json" },

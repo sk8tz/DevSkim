@@ -306,7 +306,7 @@ export default class DevSkimServer
     private async validateTextDocument(textDocument: TextDocument): Promise<void>
     {
         console.log("hello");
-        if (textDocument && Object.prototype.hasOwnProperty.call(textDocument,"uri"))
+        if (typeof textDocument !== 'undefined' && Object.prototype.hasOwnProperty.call(textDocument,"uri"))
         {
             this.connection.console.log(`DevSkimServer: validateTextDocument(${textDocument.uri})`);
             const diagnostics: Diagnostic[] = [];
