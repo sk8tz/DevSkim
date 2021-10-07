@@ -220,7 +220,7 @@
   },
   "scripts": {
     "clean": "npm run clean:dist && npm run clean:client && npm run clean:server && npm run clean:base",
-    "clean:base": "npx rimraf *.log out node_modules",
+    "clean:base": "npx rimraf node_modules",
     "clean:client": "cd client && npm run clean && cd ..",
     "clean:server": "cd server && npm run clean && cd ..",
     "clean:dist": "cd server && npm run clean:dist && cd .. && cd client && npm run clean:dist && cd ..",
