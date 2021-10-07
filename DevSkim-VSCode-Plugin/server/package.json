@@ -22,8 +22,8 @@
     "node": "*"
   },
   "scripts": {
-    "clean": "npx --ignore-existing --quiet rimraf node_modules && npm run clean:dist",
-    "clean:dist": "npx --ignore-existing --quiet rimraf dist out"
+    "clean": "npm run clean:dist && npx rimraf node_modules",
+    "clean:dist": "npx rimraf dist out"
   },
   "dependencies": {
     "@babel/types": "^7.15.6",

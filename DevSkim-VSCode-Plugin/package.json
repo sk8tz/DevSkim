@@ -219,7 +219,7 @@
     "preset": "ts-jest"
   },
   "scripts": {
-    "clean": "npm run clean:base && npm run clean:client && npm run clean:server && npm run clean:dist",
+    "clean": "npm run clean:dist && npm run clean:client && npm run clean:server && npm run clean:base",
     "clean:base": "npx rimraf *.log out node_modules",
     "clean:client": "cd client && npm run clean && cd ..",
     "clean:server": "cd server && npm run clean && cd ..",
