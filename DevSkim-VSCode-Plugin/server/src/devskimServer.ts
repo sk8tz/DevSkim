@@ -10,9 +10,19 @@
  */
 import
 {
-    CodeActionParams, Connection, Diagnostic, DidChangeConfigurationParams, InitializedParams, Hover,
-    InitializeParams, RequestType, ServerCapabilities, TextDocuments, TextDocumentPositionParams    
-} from "vscode-languageserver";
+    CodeActionParams, 
+    Connection, 
+    Diagnostic, 
+    DidChangeConfigurationParams, 
+    InitializedParams, 
+    Hover,
+    InitializeParams, 
+    RequestType, 
+    ServerCapabilities, 
+    TextDocuments, 
+    TextDocumentSyncKind,
+    TextDocumentPositionParams, 
+} from "vscode-languageserver/node";
 import{ TextDocument } from "vscode-languageserver-textdocument";
 
 import { Command, TextEdit } from 'vscode-languageserver-protocol';
@@ -38,7 +48,7 @@ export default class DevSkimServer
      * @param connection the connection to the client
      * @param worker an instantiated instance of the DevSkimWorker class that does the analysis
      */
-    private constructor(private documents, private connection: Connection, private worker: DevSkimWorker)
+    private constructor(private documents: TextDocuments<TextDocument>, private connection: Connection, private worker: DevSkimWorker)
     {
         this.globalSettings = worker.dswSettings.getSettings();
     }
@@ -49,7 +59,7 @@ export default class DevSkimServer
      * @param connection connection to the client
      * @param params parameters the client passed during initialization
      */
-    public static async initialize(documents, connection: Connection, params: InitializedParams): Promise<DevSkimServer>
+    public static async initialize(documents: TextDocuments<TextDocument>, connection: Connection, params: InitializedParams): Promise<DevSkimServer>
     {
         const dsWorkerSettings = new DevSkimWorkerSettings();
         const dsSettings = dsWorkerSettings.getSettings();
@@ -99,7 +109,7 @@ export default class DevSkimServer
         // @todo: review this to find the best implementation
         return {
             // Tell the client that the server works in FULL text document sync mode
-            textDocumentSync: this.documents.syncKind,
+            textDocumentSync: TextDocumentSyncKind.Full,
             codeActionProvider: true,
         };
     }
