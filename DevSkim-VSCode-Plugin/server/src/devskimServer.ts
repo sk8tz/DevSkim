@@ -171,12 +171,19 @@ export default class DevSkimServer
      */
     private onRequestValidateDocsRequest(params: ValidateDocsParams): void
     {
-        for (const docs of params.textDocuments)
+        for (const doc of params.textDocuments)
         {
-            const textDocument = this.documents.get(docs.uri);
+            if (typeof doc !== 'undefined')
+            {
+                const textDocument = this.documents.get(doc.uri);
 
-            this.connection.console.log(`DevSkimServer: onRequestValidateDocsRequest(${textDocument.uri})`);
-            this.validateTextDocument(textDocument);
+                this.connection.console.log(`DevSkimServer: onRequestValidateDocsRequest(${textDocument.uri})`);
+                this.validateTextDocument(textDocument);
+            }
+            else
+            {
+                this.connection.console.log(`DevSkimServer: got undefined document. Skipping.`);
+            }
         }
     }
 
