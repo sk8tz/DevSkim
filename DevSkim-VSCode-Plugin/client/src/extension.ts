@@ -103,8 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
 		setTimeout(function () {
 			const textDocuments: TextDocumentIdentifier[] = [];
 			for (let x = 0; x < vscode.workspace.textDocuments.length; x++) {
-				textDocuments[x] = Object.create(null);
-				textDocuments[x].uri = vscode.workspace.textDocuments[x].uri.toString();
+				textDocuments[x] = TextDocumentIdentifier.create(vscode.workspace.textDocuments[x].uri.toString());
 			}
 			client.sendRequest(ValidateDocsRequest.type, {textDocuments});
 			console.log("Sent timeout request.");
