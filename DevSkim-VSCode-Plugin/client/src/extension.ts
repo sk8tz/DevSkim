@@ -107,7 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 			client.sendRequest(ValidateDocsRequest.type, {textDocuments});
 			console.log("Sent timeout request.");
-		}, 30000);
+		}, 1000);
 	} catch (err) {
 		handleError(err);
 	}

@@ -37,9 +37,9 @@ export class DevSkimMain
             let pipeName = '';
             let bToPipe = false;
 
-            console.log(`index: listen(${connectionCtr})`);
+            this.connection.console.log(`index: listen(${connectionCtr})`);
             let idxOfPipe = process.argv.indexOf('--pipe');
-            console.log(`index: listen(idxOfPipe - ${idxOfPipe}, process.argv.length - ${process.argv.length})`);
+            this.connection.console.log(`index: listen(idxOfPipe - ${idxOfPipe}, process.argv.length - ${process.argv.length})`);
 
             if (idxOfPipe !== -1 && ((process.argv.length - 2) >= idxOfPipe))
             {
@@ -47,16 +47,12 @@ export class DevSkimMain
                 bToPipe = true;
             }
 
-            this.connection = bToPipe
-                ? this.createConnectionToPipes(pipeName)
-                : createConnection(ProposedFeatures.all);
-
-            const documents = new TextDocuments(TextDocument);
+            this.connection = createConnection(ProposedFeatures.all);
 
             this.connection.onInitialize((params: InitializeParams): Promise<InitializeResult> =>
             {
                 this.connection.console.log(`Initialized server v. `);
-                return DevSkimServer.initialize(documents, this.connection, params)
+                return DevSkimServer.initialize(this.connection, params)
                     .then(async server =>
                     {
                         await server.loadRules();
@@ -67,10 +63,6 @@ export class DevSkimMain
                         capabilities: server.capabilities(),
                     }));
             });
-
-            documents.listen(this.connection);
-            this.connection.console.log(`index: now listening on documents ...`);
-
             this.connection.listen();
             this.connection.console.log(`index: now listening on connection ...`);
         }

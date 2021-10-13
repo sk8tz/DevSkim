@@ -48,7 +48,7 @@ export default class DevSkimServer
      * @param connection the connection to the client
      * @param worker an instantiated instance of the DevSkimWorker class that does the analysis
      */
-    private constructor(private documents: TextDocuments<TextDocument>, private connection: Connection, private worker: DevSkimWorker)
+    private constructor(private connection: Connection, private worker: DevSkimWorker)
     {
         this.globalSettings = worker.dswSettings.getSettings();
     }
@@ -59,7 +59,7 @@ export default class DevSkimServer
      * @param connection connection to the client
      * @param params parameters the client passed during initialization
      */
-    public static async initialize(documents: TextDocuments<TextDocument>, connection: Connection, params: InitializedParams): Promise<DevSkimServer>
+    public static async initialize(connection: Connection, params: InitializedParams): Promise<DevSkimServer>
     {
         const dsWorkerSettings = new DevSkimWorkerSettings();
         const dsSettings = dsWorkerSettings.getSettings();
@@ -67,7 +67,7 @@ export default class DevSkimServer
         const logger : DebugLogger = new DebugLogger(dsSettings,connection);
 
         const worker = new DevSkimWorker(logger, dsSuppression, dsSettings);
-        DevSkimServer.instance = new DevSkimServer(documents, connection, worker);
+        DevSkimServer.instance = new DevSkimServer(connection, worker);
         return DevSkimServer.instance;
     }
 
@@ -98,7 +98,7 @@ export default class DevSkimServer
         // document handlers
         this.documents.onDidOpen(this.onDidOpen.bind(this));
         this.documents.onDidClose(this.onDidClose.bind(this));
-        this.documents.onDidChangeContent(this.onDidChangeContent.bind(this));
+        this.documents.onDidChangeContent(change => this.onDidChangeContent(change.document));
     }
 
     /**
@@ -121,7 +121,7 @@ export default class DevSkimServer
     private onDidOpen(change)
     {
         this.connection.console.log(`DevSkimServer: onDidOpen(${change.document.uri})`);
-        // this.validateTextDocument(change.document);
+        this.validateTextDocument(change.document);
     }
 
     /**
@@ -143,6 +143,7 @@ export default class DevSkimServer
      */
     private onDidChangeContent(change): Promise<void>
     {
+        this.connection.console.log("Found a change");
         this.connection.console.log(`DevSkimServer: onDidChangeContent(${change.document.uri})`);
         return this.validateTextDocument(change.document);
     }
@@ -162,7 +163,7 @@ export default class DevSkimServer
             capabilities.textDocument.publishDiagnostics &&
             capabilities.textDocument.publishDiagnostics.relatedInformation
         );
-        this.workspaceRoot = params.rootPath;
+        this.workspaceRoot = params.rootUri;
     }
 
     /**
@@ -348,6 +349,7 @@ export default class DevSkimServer
     private hasWorkspaceFolderCapability = false;
     private hasDiagnosticRelatedInformationCapability = false;
     private workspaceRoot: string;
+    private documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 }
 
 export class ReloadRulesRequest
