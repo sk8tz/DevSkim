@@ -3,7 +3,5 @@
 		"outDir": "out",
 		"rootDirs": ["./src"],
 		"composite": true
-	},
-	"include": ["src"],
-	"exclude": ["**/__mocks__/*", "**/__tests__/*"]
+	}
 }
