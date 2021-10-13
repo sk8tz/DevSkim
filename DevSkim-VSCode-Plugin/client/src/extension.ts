@@ -57,12 +57,12 @@ export function activate(context: vscode.ExtensionContext) {
 			run: {
 				module: serverModule,
 				options: { env },
-				transport: TransportKind.ipc,
+				transport: TransportKind.pipe,
 			},
 			debug: {
 				module: serverModule,
 				options: debugOptions,
-				transport: TransportKind.ipc,
+				transport: TransportKind.pipe,
 			},
 		};
 

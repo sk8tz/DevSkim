@@ -85,6 +85,7 @@ export default class DevSkimServer
      */
     public register(connection: Connection): void
     {
+        connection.console.log("Registering listeners.");
         this.documents.listen(this.connection);
         
         // connection handlers
