@@ -4,8 +4,6 @@ on:
   push:
     paths:
     - '**'
-  schedule:
-    - cron: '0 3 * * 3'
 
 jobs:
   DevSkim-Run:
@@ -34,3 +32,10 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: devskim-results.sarif
+        
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: devskim-results.sarif
+        path: |
+          devskim-results.sarif
